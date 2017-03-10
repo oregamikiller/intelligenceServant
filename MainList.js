@@ -25,7 +25,6 @@ export default class MainList extends Component {
             dataSource: ds.cloneWithRows(['获取数据中...']),
         };
     }
-
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
     }
@@ -94,7 +93,6 @@ export default class MainList extends Component {
                 .done();
         }
     }
-
     getSearchBar() {
         if (currentIndex === 3) {
             return null;
@@ -109,8 +107,6 @@ export default class MainList extends Component {
                 />;
         }
     }
-
-
     render() {
         var self = this;
         return (
@@ -120,7 +116,6 @@ export default class MainList extends Component {
                     style={styles.content}
                     onItemSelected={(index) => {console.log(`current item's index is ${index}`);
                         currentIndex = index;
-
                         searchFlag = false;
                         hasMore = false;
                         this.fetchData();
@@ -135,7 +130,9 @@ export default class MainList extends Component {
                         selectedIcon={require('./img/tabbaricon1.jpg')}
                         onPress={() => {
                 }}
-                        title='任务'>
+                        title='已定制'>
+                        <View>
+                        <Text>Can I help you</Text>
 
                             <ListView
                                 dataSource={this.state.dataSource}
@@ -145,7 +142,7 @@ export default class MainList extends Component {
                                 onEndReached={this.fetchNext.bind(this)}
                                 onEndReachedThreshold={20}
                                 />
-
+                        </ View>
                     </TabBar.Item>
 
                     <TabBar.Item
@@ -153,7 +150,9 @@ export default class MainList extends Component {
                         selectedIcon={require('./img/tabbaricon2.png')}
                         onPress={() => {
                     }}
-                        title='装备'>
+                        title='来挑选'>
+                        <View>
+                        <Text>挑选想要的功能</Text>
                         <ListView
                             dataSource={this.state.dataSource}
                             renderRow={this._renderRow.bind(this)}
@@ -162,11 +161,14 @@ export default class MainList extends Component {
                             onEndReached={this.fetchNext.bind(this)}
                             onEndReachedThreshold={20}
                             />
+                            </ View>
                     </TabBar.Item>
                     <TabBar.Item
                         icon={require('./img/tabbaricon3.jpg')}
                         selectedIcon={require('./img/tabbaricon3.jpg')}
-                        title='怪物'>
+                        title='发布'>
+                        <View>
+                        <Text>发</Text>
                         <ListView
                             dataSource={this.state.dataSource}
                             renderRow={this._renderRow.bind(this)}
@@ -175,13 +177,15 @@ export default class MainList extends Component {
                             onEndReached={this.fetchNext.bind(this)}
                             onEndReachedThreshold={20}
                             />
-
+                        </View>
                     </TabBar.Item>
 
                     <TabBar.Item
                         icon={require('./img/tabbaricon4.png')}
                         selectedIcon={require('./img/tabbaricon4.png')}
-                        title='历史'>
+                        title='我的'>
+                        <View>
+                        <Text></Text>
                         <ListView
                             dataSource={this.state.dataSource}
                             renderRow={this._renderRow.bind(this)}
@@ -190,6 +194,7 @@ export default class MainList extends Component {
                             onEndReached={this.fetchNext.bind(this)}
                             onEndReachedThreshold={20}
                         />
+                        </View>
                     </TabBar.Item>
                 </TabBar>
             </View>
@@ -288,8 +293,6 @@ export default class MainList extends Component {
                 />
         );
     }
-
-
 }
 
 var dataList0 = [];
