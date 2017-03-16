@@ -1,45 +1,53 @@
 import React, { Component } from 'react';
 import {
-        Image,
-        ListView,
-        TouchableHighlight,
-        StyleSheet,
-        RecyclerViewBackedScrollView,
-        Text,
-        View,
-        Platform,
-        AsyncStorage,
-        } from 'react-native';
+    Image,
+    ListView,
+    TouchableHighlight,
+    StyleSheet,
+    RecyclerViewBackedScrollView,
+    Text,
+    View,
+    Platform,
+    AsyncStorage,
+    Button,
+    TextInput,
+} from 'react-native';
+
+import Config from './Config.js'
 
 export default class MyHomeView extends Component {
     constructor(props) {
         super(props);
-        gameid = props.gameid;
         this.state = {
             dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
-            user: null
+            loginName: null,
+            password: null,
+            isFinishInit: false
         };
     }
 
-    constructor(props) {
-        super(props);
-        gameid = props.gameid;
-
+    componentWillMount() {
+        this.getUserStatus().done();
     }
 
-    getUser() {
-        AsyncStorage.getItem('@localStore:' + 'user').then(function (user) {
-            this.setState({
-                user: user
-            });
-        });
-    }
+    async getUserStatus() {
+        let user = await AsyncStorage.getItem('@localStore:' + 'user');
+            if (user) {
+                let userJSON = JSON.parse(user);
+                this.setState({
+                    user: userJSON.id,
+                    token: userJSON.token,
+                    isFinishInit: true
+                });
+            }
+        }
+
 
     getTask() {
         fetch('https://semidream.com/trophydetail/' + gameid)
             .then((response) => response.json())
             .then((responseData) => {
-                this.setState({
+                self.setState({
                     dataSource: this.state.dataSource.cloneWithRows(responseData),
                     loaded: true,
                 });
@@ -47,18 +55,52 @@ export default class MyHomeView extends Component {
             .done();
     }
 
-    componentDidMount() {
-        this.fetchData();
-        this.getUser();
-    }
-
     renderUser() {
         if (this.state.user) {
-            return <View></ View>;
+            return <View style={{marginTop: 55}}>
+                <Text>{this.state.user}</Text>
+            </View>
         }
         else {
-                return <View></ View>;
-            }
+            return <View style={{marginTop: 55,
+        padding: 5,
+        backgroundColor: '#F6F6F6', flexDirection: 'column'}}>
+                <View style={styles.inputRow}>
+                    <Text>用户名:</Text>
+                    <TextInput style={styles.input} ref="loginName" placeholder="请输入用户名"
+                               keyboardType="default"
+                               onChangeText={(text) => this.setState({loginName: text})}
+                               value={this.state.loginName}/>
+
+                </ View>
+                <View style={styles.inputRow}>
+                    <Text>密码:</Text>
+                    <TextInput style={styles.input} ref='password' placeholder='请输入密码'
+                               keyboardType="default"
+                               onChangeText={(text) => this.setState({password: text})}
+                               value={this.state.password}/>
+                </ View>
+                <Button
+                    onPress={() => {console.log(this.state, Config.authUrl);
+                        fetch(Config.authUrl + '?' + 'userID=' + this.state.loginName + '&password=' + this.state.password)
+                        .then((response) => response.json())
+                        .then((responseJson) => {
+                            console.dir(responseJson);
+                            if (responseJson.msg === 'ok') {
+                                let user = {id: this.state.loginName, token: responseJson.token};
+                                AsyncStorage.setItem('@localStore:' + 'user', JSON.stringify(user)).then(function () {
+                                console.log('login success');
+                                }
+                            );
+
+                            }
+                          });
+                    }}
+                    title="注册或登录"
+                    color="#841584"
+                    />
+            </View>
+        }
     }
 
     renderTask() {
@@ -78,22 +120,30 @@ export default class MyHomeView extends Component {
     }
 
     render() {
-        return (
 
-            <ListView style={{marginTop: 55}}
-                dataSource={this.state.dataSource}
-                enableEmptySections={true}
-                renderRow={this._renderRow}
-                renderSeparator={this._renderSeperator}
-                />
-        );
+        if (this.state.isFinishInit) {
+            return (
+                <View>
+                    {this.renderUser()}
+
+                </View>
+            );
+        } else {
+            return (
+                <View>
+
+
+                </View>
+            );
+        }
+
     }
 
     _renderRow(rowData:string, sectionID:number, rowID:number) {
         var rowHash = Math.abs(hashCode(rowData));
-        var des = rowData.desc.split('|');
+        var des     = rowData.desc.split('|');
         if (des.length > 1) {
-            rowData.desc = des[0];
+            rowData.desc    = des[0];
             rowData.descCHN = des[1];
         }
         return (
@@ -102,7 +152,7 @@ export default class MyHomeView extends Component {
                     <View style={styles.row}>
                         <Image style={styles.thumb} source={{uri:rowData.picUrl}}/>
                         <Text style={styles.text}>
-                             {rowData.title }{"\n"}{rowData.desc}{"\n"}{rowData.descCHN}
+                            {rowData.title }{"\n"}{rowData.desc}{"\n"}{rowData.descCHN}
                         </Text>
                     </View>
                 </View>
@@ -123,14 +173,14 @@ export default class MyHomeView extends Component {
     }
 
     pressRow(rowID:number) {
-        if (Platform.OS === 'ios')  {
+        if (Platform.OS === 'ios') {
             this.props.navigator.pop();
         } else {
             this.props.navigator.pop();
             //NativeAndroidActivityLoader.startActivityByString('com.generalapp.AdActivity');
         }
 
-}
+    }
 
 
 };
@@ -151,6 +201,12 @@ var styles = StyleSheet.create({
         padding: 5,
         backgroundColor: '#F6F6F6',
     },
+
+    inputRow: {
+        padding: 5,
+        margin: 5,
+        backgroundColor: '#CCC',
+    },
     separator: {
         height: 1,
         backgroundColor: '#CCCCCC',
@@ -164,4 +220,8 @@ var styles = StyleSheet.create({
         margin: 5,
         flex: 1,
     },
+    input: {
+        height: 40,
+        fontSize: 14
+    }
 });

@@ -10,6 +10,7 @@ import {
 import {Actions, Scene, Router} from 'react-native-router-flux';
 import TrophyListView from './TrophyListView';
 import MainList from './MainList';
+import MyHomeView from './MyHomeView.js'
 
 const styles = StyleSheet.create({
     navBarStyle: {
@@ -19,6 +20,7 @@ const styles = StyleSheet.create({
 
 const scenes = Actions.create(
     <Scene key="root">
+        <Scene key="home" component={MyHomeView} title="主页" navigationBarStyle={styles.navBarStyle}/>
         <Scene key="main" component={MainList} title="攻略目录" rightTitle="清除历史" onRight={()=>{AsyncStorage.clear(console.log);
         Alert.alert(
             '清除成功',
