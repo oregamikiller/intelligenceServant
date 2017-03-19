@@ -36,10 +36,12 @@ export default class MyHomeView extends Component {
                 let userJSON = JSON.parse(user);
                 this.setState({
                     user: userJSON.id,
-                    token: userJSON.token,
-                    isFinishInit: true
+                    token: userJSON.token
                 });
             }
+        this.setState({
+            isFinishInit: true,
+        })
         }
 
 
