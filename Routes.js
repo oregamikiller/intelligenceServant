@@ -20,8 +20,7 @@ const styles = StyleSheet.create({
 
 const scenes = Actions.create(
     <Scene key="root">
-        <Scene key="home" component={MyHomeView} title="主页" navigationBarStyle={styles.navBarStyle}/>
-        <Scene key="main" component={MainList} title="攻略目录" rightTitle="清除历史" onRight={()=>{AsyncStorage.clear(console.log);
+        <Scene key="main" component={MainList} title="1" rightTitle="清除历史" onRight={()=>{AsyncStorage.clear(console.log);
         Alert.alert(
             '清除成功',
   '已清除本地缓存浏览历史',
@@ -29,7 +28,8 @@ const scenes = Actions.create(
     {text: 'OK', onPress: () => {console.log('OK Pressed'); Actions.main({time: new Date().getTime()})} },
   ]
 )}} navigationBarStyle={styles.navBarStyle} />
-        <Scene key="detail" component={TrophyListView} title="奖杯列表" navigationBarStyle={styles.navBarStyle}/>
+        <Scene key="detail" component={TrophyListView} title="2" navigationBarStyle={styles.navBarStyle}/>
+        <Scene key="home" component={MyHomeView} title="主页" navigationBarStyle={styles.navBarStyle}/>
     </Scene>
 );
 

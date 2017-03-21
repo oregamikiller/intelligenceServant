@@ -38,20 +38,21 @@ export default class MyHomeView extends Component {
                     user: userJSON.id,
                     token: userJSON.token
                 });
+                this.getTask();
             }
         this.setState({
-            isFinishInit: true,
+            isFinishInit: true
         })
         }
 
 
     getTask() {
-        fetch('https://semidream.com/trophydetail/' + gameid)
+        fetch('https://task.semidream.com/')
             .then((response) => response.json())
             .then((responseData) => {
-                self.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(responseData),
-                    loaded: true,
+                this.setState({
+                    dataSource: this.state.dataSource.cloneWithRows(responseData.tasks),
+                    loaded: true
                 });
             })
             .done();
@@ -59,12 +60,12 @@ export default class MyHomeView extends Component {
 
     renderUser() {
         if (this.state.user) {
-            return <View style={{marginTop: 55}}>
-                <Text>{this.state.user}</Text>
+            return <View>
+                <Text>{'欢迎你:' + this.state.user}</Text>
             </View>
         }
         else {
-            return <View style={{marginTop: 55,
+            return <View style={{
         padding: 5,
         backgroundColor: '#F6F6F6', flexDirection: 'column'}}>
                 <View style={styles.inputRow}>
@@ -106,7 +107,22 @@ export default class MyHomeView extends Component {
     }
 
     renderTask() {
-
+        if (this.state.loaded) {
+            return <View>
+                <Text>{'任务列表'}</Text>
+                <ListView
+                    dataSource={this.state.dataSource}
+                    renderRow={this._renderRow.bind(this)}
+                    enableEmptySections={true}
+                    renderSeparator={this._renderSeperator}
+                    onEndReached={()=>{}}
+                    onEndReachedThreshold={20}
+                    />
+            </View>
+        } else {
+            return <View>
+            </View>
+        }
     }
 
     fetchData() {
@@ -127,6 +143,7 @@ export default class MyHomeView extends Component {
             return (
                 <View>
                     {this.renderUser()}
+                    {this.renderTask()}
 
                 </View>
             );
@@ -143,18 +160,12 @@ export default class MyHomeView extends Component {
 
     _renderRow(rowData:string, sectionID:number, rowID:number) {
         var rowHash = Math.abs(hashCode(rowData));
-        var des     = rowData.desc.split('|');
-        if (des.length > 1) {
-            rowData.desc    = des[0];
-            rowData.descCHN = des[1];
-        }
         return (
             <TouchableHighlight>
                 <View>
                     <View style={styles.row}>
-                        <Image style={styles.thumb} source={{uri:rowData.picUrl}}/>
                         <Text style={styles.text}>
-                            {rowData.title }{"\n"}{rowData.desc}{"\n"}{rowData.descCHN}
+                            {rowData.title }{"\n"}{rowData.description}{"\n"}{rowData.user}
                         </Text>
                     </View>
                 </View>

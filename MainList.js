@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 
 import TabBar from 'react-native-xtabbar';
+import MyHomeView from './MyHomeView.js';
 
 import {Actions} from 'react-native-router-flux';
 
@@ -99,7 +100,7 @@ export default class MainList extends Component {
         } else {
             return <TextInput ref = "searchInput"
                            style={styles.searchbox}
-                           placeholder="请输入想搜索游戏的标题"
+                           placeholder="请输入自动化任务名称"
                            returnKeyType="search"
                            keyboardType="default"
                            onChangeText={text => this.SearchTitle(text)}
@@ -130,19 +131,8 @@ export default class MainList extends Component {
                         selectedIcon={require('./img/tabbaricon1.jpg')}
                         onPress={() => {
                 }}
-                        title='已定制'>
-                        <View>
-                        <Text>Can I help you</Text>
-
-                            <ListView
-                                dataSource={this.state.dataSource}
-                                renderRow={this._renderRow.bind(this)}
-                                enableEmptySections={true}
-                                renderSeparator={this._renderSeperator}
-                                onEndReached={this.fetchNext.bind(this)}
-                                onEndReachedThreshold={20}
-                                />
-                        </ View>
+                        title='我的'>
+                        <MyHomeView />
                     </TabBar.Item>
 
                     <TabBar.Item
@@ -150,7 +140,7 @@ export default class MainList extends Component {
                         selectedIcon={require('./img/tabbaricon2.png')}
                         onPress={() => {
                     }}
-                        title='来挑选'>
+                        title='请挑选'>
                         <View>
                         <Text>挑选想要的功能</Text>
                         <ListView
@@ -166,7 +156,7 @@ export default class MainList extends Component {
                     <TabBar.Item
                         icon={require('./img/tabbaricon3.jpg')}
                         selectedIcon={require('./img/tabbaricon3.jpg')}
-                        title='发布'>
+                        title='实验室'>
                         <View>
                         <Text>发</Text>
                         <ListView
@@ -183,7 +173,7 @@ export default class MainList extends Component {
                     <TabBar.Item
                         icon={require('./img/tabbaricon4.png')}
                         selectedIcon={require('./img/tabbaricon4.png')}
-                        title='我的'>
+                        title='提需求'>
                         <View>
                         <Text></Text>
                         <ListView
